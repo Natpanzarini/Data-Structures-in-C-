@@ -1,0 +1,63 @@
+#include <iostream>
+#include <fstream>
+
+#include "point.h"
+
+using std::vector;
+using std::string;
+
+vector<Point> original_points;
+
+vector<Point> get_points(){
+  std::cout << "Please enter 7 (x,y) pairs." <<
+    std::endl;
+
+  Point data;
+
+  for(auto i = 0; i < 2; i++){
+    std::cin >> data;
+    original_points.push_back(data);
+  }
+  return original_points
+}
+
+std::istream& operator>>(std::istream& is, Point& p){
+  is >> p.x >> p.y;
+  return is;
+}
+
+void show_points(const vector<Point> points){
+
+  if(points.empty()){std::cout << "Vector is empty"
+    << std::endl;}
+
+  for(auto i = 0; i < points.size(); i++){
+    std::cout << points[i].x << points[i].y << std::endl;
+  }
+}
+
+void write_points(const vector<Point> points,
+    const string& fname){
+
+  std::ofstream write(fname);
+  for(auto i: points){
+    write << i.x << i.y << std::endl;
+  }
+  write.close();
+}
+
+vector<Point> read_points(const string& fname){
+
+  vector<Point> processed_points;
+  Point p;
+  std::ifstream read(fname);
+
+  for(auto i = 0; i < fname.size(); i++){
+    read >> p;
+    processed_points.push_back(p);
+  }
+  return processed_points;
+}
+
+
+

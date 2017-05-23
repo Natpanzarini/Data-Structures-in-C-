@@ -1,0 +1,46 @@
+#include <chrono>
+#include <ctime>
+#include <stdexcept>
+#include <string> 
+
+#include "Date.h"
+
+namespace mesa {
+
+  Date::Date (int y, Month m, int d) {
+  }
+
+  Date::Date() {
+  }
+
+
+  //
+  //
+  //  date helpers
+  //
+  //
+
+  Month to_month(int month) {
+    if (month < int(Month::JAN) || month > int(Month::DEC))
+      throw std::invalid_argument(std::to_string(month));
+
+    return Month(month);
+  }
+
+  bool is_date(int year, Month month, int day) {
+    return false;
+  }
+
+  inline bool is_leapyear(int year){
+    if ((year & 400 == 0) || (year % 4 == 0) && (year % 100 != 0))
+      return true;
+  }
+
+  std::ostream& operator<<(std::ostream& os, const Date& d) {
+    return os;
+  }
+
+  std::istream& operator>>(std::istream& is, Date& dd) {
+    return is;
+  }
+}

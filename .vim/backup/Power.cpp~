@@ -1,0 +1,35 @@
+#include <string>
+#include <stack>
+#include <stdexcept>
+
+#include "Bigint.hpp"
+#include "Command.h"
+#include "Power.h"
+
+bool Power::execute(std::stack <Bigint>& lhs, const std::string& rhs)const{
+  if (rhs[0] != '^') return false;
+
+  bool display = true;
+
+  if((lhs.size() < 2) && (display == true)){
+    throw std::invalid_argument("Not enough operands");
+    display = false;
+  }
+  auto a = lhs.top();
+  lhs.pop();
+  auto b = lhs.top();
+  lhs.pop();
+
+  if(b == 0){
+    lhs.push(0);
+    return true;
+  }
+
+  if(a == 0){
+    lhs.push(1);
+    return true;
+  }
+
+  lhs.push(b^a);
+  return true;
+}

@@ -1,0 +1,80 @@
+#pragma once
+
+#include <string>
+#include <unistd.h>
+#include <utility>
+#include <vector>
+#include <stack>
+
+#include "Bigint.hpp"
+
+namespace mesa {
+
+  /**
+   * Define a type to store a pointer to a function 
+   */
+  using op = Bigint (*)(Bigint x, Bigint y);
+
+  /**
+   * Add two unsigned integers.
+   */
+  Bigint add     (Bigint x, Bigint y);
+  /**
+   * Multiply two unsigned integers.
+   */
+  Bigint multiply(Bigint x, Bigint y);
+  /**
+   * Raise base to a power.
+   */
+  Bigint power   (Bigint base, Bigint exponent);
+
+  /**
+   * Return a function pointer to one of:
+   * - add
+   * - multiply
+   * - power
+   * based on a char received
+   */
+  //op get_operation(const char command);
+
+  /**
+   * Use the operation to evaluate each value in the 'problem'
+  void evaluate (const op operation, const std::string& problem);
+   */
+  /**
+   * Convert a string (of numbers) into a vector.
+   */
+  std::vector<std::string> vectorize (const std::string& problem);
+
+  bool token_to_size (const std::string& token, Bigint& value);
+
+  /**
+   * Call the provided funtion to accumulate results for each
+   * element in the provided vector.
+   */
+    Bigint calculate(const std::vector<std::string>& tokens);
+
+  /*
+   * Function to convert my stack to a string and print the stack
+   */
+  void stack_to_string(std::stack<Bigint> lhs);
+
+  /**
+   * Return true if the calculator should print verbose output.
+   */
+  bool verbose();
+  /**
+   * Change the state of output verbosity.
+   */
+  void set_verbose(bool value);
+
+  /**
+   * Return true if both cin and cout are connected to a terminal
+   */
+  inline bool interactive() {
+    return isatty(fileno(stdin)) && isatty(fileno(stdout));
+  }
+
+}
+
+

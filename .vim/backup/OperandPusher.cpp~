@@ -1,0 +1,16 @@
+#include <stdexcept>
+#include <iostream>
+
+#include "OperandPusher.h"
+
+bool OperandPusher::execute(
+    std::stack<Bigint>& operands,
+    const std::string& token) const
+{
+  for(auto c: token)
+    if (c < '0' || c > '9')
+      return false;
+  operands.push(token);
+  return true;
+}
+

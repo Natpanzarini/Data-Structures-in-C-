@@ -1,0 +1,11 @@
+CXX=c++
+#CXXFLAGS=-Wall -Wextra -pedantic -std=c++11 -O3
+#CXXFLAGS+= -g
+CXXFLAGS+= -I/opt/local/include
+
+calc : clean
+	${CXX} ${CXXFLAGS} -o $@ *.cpp
+
+clean : 
+	rm -f calc *.o core
+	rm -rf calc.dSYM

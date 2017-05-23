@@ -1,0 +1,27 @@
+#include <stack>
+#include <vector>
+
+#include "Command.h"
+#include "OperandPusher.h"
+#include "Add.h"
+#include "Multiply.h"
+#include "Power.h"
+#include "Bigint.hpp"
+  
+  OperandPusher* num = new OperandPusher;
+  Add* plus = new Add;
+  Multiply* mult = new Multiply;
+  Power* exp = new Power;
+
+//TODO
+int main() {
+  
+
+  std::stack<Bigint> operands;
+  std::string token;
+
+  num->execute(operands, token);
+
+  std::vector<mesa::Command*> commands = {num,plus,mult,exp};
+
+}

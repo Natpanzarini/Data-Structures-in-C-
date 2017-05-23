@@ -1,0 +1,36 @@
+#include <stack>
+ 
+#include "Bigint.hpp"
+
+namespace mesa
+  {
+    // A command interface for arithmetic operations.\m[]
+    class Command {
+      public:
+        virtual ~Command(){}
+        // Execute a command.
+        // @param operands a stack of unsigned integers.
+        // @param token to be evaluated and used during execution.
+        //    If the token is not 'appropriate' for this object, 
+        //    then do nothing.
+        // @return true if this command was executed.
+        virtual bool execute(std::stack<Bigint>& operands, 
+                             const std::string& token) const = 0;
+        void handler(std::string& input);
+
+       void set_operations(std::vector <Command*> operations, Command* func){
+          operations.push_back(func);
+       }
+
+       std::vector <Command*> get_operations(){
+         return operations;
+       }
+
+      private:
+        std::vector <Command*> operations; 
+    };
+  }
+
+ //void operators(std::stack <mesa::Command*> operations, mesa::Command* func){
+          //operations.push_back(func);
+       //}

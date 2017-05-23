@@ -1,0 +1,27 @@
+//Natalio Panzarini
+//5170525
+#include <stack>
+#include <string>
+#include <stdexcept>
+#include <iostream>
+
+#include "Bigint.hpp"
+#include "Command.h"
+#include "Multiply.h"
+
+bool Multiply::execute(std::stack <Bigint>& lhs, const std::string& rhs)const{
+  if(rhs[0] != '*') return false;
+
+  bool display = true;
+
+  if((lhs.size() < 2) && (display == true)){
+    throw std::invalid_argument("Not enough operands");
+    display = false;
+  }
+
+  auto a = lhs.top(); lhs.pop();
+  auto b = lhs.top(); lhs.pop();
+
+  lhs.push(a * b);
+  return true;
+}

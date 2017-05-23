@@ -1,0 +1,101 @@
+//Natalio Panzarini
+//Lab 13a
+// 05-01-2017
+
+#include <iostream>
+#include <algorithm>
+#include <array>
+#include <iterator>
+#include <string>
+#include <vector>
+
+const int N = 10;
+int ga[N] = {1,2,3,4,5,6,7,8,9,10};
+std::vector<int> gv = {1,2,4,8,16,32,64,128,256,65536};
+
+void f(int* ga,int num){
+  int la[N];
+
+  //Copy everything in ga into la
+  for(auto i = 0; i < N; i++){
+    la[i] = ga[i];
+  }
+
+
+  //Print out everything in la
+  std::cout << std::endl << "Printing out la" << std::endl;
+  for(auto i = 0; i < N; i++){
+    std::cout << la[i] << std::endl;
+
+  }
+
+  auto p = new int[N];
+
+  //Copy everything in ga into p
+  for(auto i = 0; i < N; i++){
+    p[i] = ga[i];
+  }
+
+  //Print out numbers in aa
+  std::cout << std::endl << "Printing out aa" << std::endl;
+  for(auto i = 0; i < N; i++){
+    std::cout << p[i] << std::endl;
+
+  }
+
+  delete p;
+}
+
+void f(std::vector<int> gv){
+  std::vector<int> lv = gv;
+  lv.size() == gv.size();
+
+  std::copy(gv.begin(),gv.end(),lv.begin());
+
+  std::cout << std::endl << "Printing out gv" << std::endl;
+  for(auto i = gv.begin(); i != gv.end(); i++){
+    std::cout << *i << std::endl;
+  }
+
+  std::vector<int> lv2 = gv;
+
+  std::cout << std::endl << "Printing out lv2" << std::endl;
+  for(auto i = lv2.begin(); i != lv2.end(); i++){
+    std::cout << *i << std::endl;
+  }
+}
+
+int main(){
+  f(ga,N);
+
+  int aa[N] {
+    1,
+      1*2,
+      1*2*3,
+      1*2*3*4,
+      1*2*3*4*5,
+      1*2*3*4*5*6,
+      1*2*3*4*5*6*7,
+      1*2*3*4*5*6*7*8,
+      1*2*3*4*5*6*7*8*9,
+      1*2*3*4*5*6*7*8*9*10,
+  };
+
+  f(aa,10);
+  f(gv);
+
+  std::vector<int> vv = {
+    1,
+    1*2,
+    1*2*3,
+    1*2*3*4,
+    1*2*3*4*5,
+    1*2*3*4*5*6,
+    1*2*3*4*5*6*7,
+    1*2*3*4*5*6*7*8,
+    1*2*3*4*5*6*7*8*9,
+    1*2*3*4*5*6*7*8*9*10,
+  };
+
+  f(vv);
+}

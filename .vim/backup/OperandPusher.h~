@@ -1,0 +1,14 @@
+#pragma once
+#include <stack>
+#include <string>
+
+#include "Bigint.hpp"
+#include "Command.h"
+
+class OperandPusher: public mesa::Command {
+  public:
+    ~OperandPusher(){}
+
+    bool execute(std::stack<Bigint>& operands, const std::string& token)const;
+};
+

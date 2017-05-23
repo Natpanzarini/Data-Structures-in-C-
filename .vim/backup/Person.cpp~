@@ -1,0 +1,43 @@
+#include <iostream>
+
+#include "Person.h"
+
+Person::~Person(){
+  if(has_child()){
+    std::cout << "Deleting " << *child() << "in " << message() << std::endl; 
+  }
+}
+
+
+Person::Person(const Person& p) : message_{p.message()},child_{nullptr}
+{
+  if(p.has_child()){
+    child_ = new Person(*p.child_);
+  }
+}
+
+Person& Person::operator=(const Person& p)
+{
+  if(&p == this){
+    return *this;
+  }
+  message_ = p.message_;
+  if(child_){
+    delete child_;
+  }
+  if(p.has_child()){
+    child_ = new Person(*p.child());
+  }
+  return *this;
+}
+
+
+std::ostream& operator<<(std::ostream& os, Person& p)
+{
+  os << p.message();
+  if(p.has_child()){
+    os << p.child() -> message();
+  };
+
+}
+

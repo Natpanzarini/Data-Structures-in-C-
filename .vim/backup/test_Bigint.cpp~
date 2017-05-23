@@ -1,0 +1,52 @@
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE BigintTest
+
+#include <boost/test/unit_test.hpp>
+#include <cmath>
+#include <iostream>
+
+#include "Bigint.hpp"
+
+BOOST_AUTO_TEST_CASE( Bigint_instantiation )
+//{
+  //BOOST_CHECK( Bigint{123} );
+  BOOST_CHECK( Bigint{"456"} );
+}
+
+BOOST_AUTO_TEST_CASE( Bigint_arithmetic )
+{
+  int i = 0;
+  Bigint a = 0;
+  BOOST_CHECK( (i += 15) == (a += 15) /* == 15  */ );
+  BOOST_CHECK( (i -= 3 ) == (a -= 3 ) /* == 12  */ );
+  BOOST_CHECK( (i /= 4 ) == (a /= 4 ) /* == 3   */ );
+  BOOST_CHECK( (i *= 2 ) == (a *= 2 ) /* == 6   */ );
+  BOOST_CHECK( (i = pow(i, 2)) == (a ^= 2 ) /* == 36 */ );
+  BOOST_CHECK( (i = pow(i, 2)) == (a = pow(double(a), 2) ) /* == 1296 */ );
+  BOOST_CHECK( (i == 1296) && (a == 1296) );
+
+  BOOST_CHECK( Bigint{1} + 0 == 1 );
+  BOOST_CHECK( Bigint{5} + 6 == 11 );
+
+  BOOST_CHECK( Bigint{2} - 0 == 2 );
+  BOOST_CHECK( Bigint{7} - 4 == 3 );
+
+  BOOST_CHECK( Bigint{0} * 4 == 0 );
+  BOOST_CHECK( Bigint{5} * 0 == 0 );
+  BOOST_CHECK( Bigint{6} * 1 == 6 );
+  BOOST_CHECK( Bigint{1} * 7 == 7 );
+
+  BOOST_CHECK( Bigint{0} / 3 == 0 );
+  BOOST_CHECK( Bigint{81} / 9 == 9 );
+
+  BOOST_CHECK( Bigint{2} ^ 99 );
+
+  BOOST_CHECK( (Bigint{8} ^ 0) == 1 );
+  BOOST_CHECK( (Bigint{0} ^ 9) == 0 );
+  BOOST_CHECK( std::string{(Bigint{2} ^ 999)} ==
+      "535754303593133660474212524530000905280702405852766803721875194185175525"
+      "562468061246599189407847929063797336458776573412593572642846157021799228"
+      "878734928740196728388741211549271053730253118557093897709107652323749179"
+      "097063369938377958277197303853145728559823884327108383021491582631219341"
+      "8602834034688" );
+}

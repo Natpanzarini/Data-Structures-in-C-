@@ -1,0 +1,114 @@
+#include "calc.h"
+#include "Bigint.hpp"
+
+#include <cmath>
+#include <cstring>
+#include <iostream>
+#include <limits>
+#include <string>
+#include <stdexcept>
+#include <sstream>
+#include <utility>
+#include <vector>
+#include <algorithm>
+#include <stack>
+#include <stdexcept>
+
+#include "Command.h"
+#include "OperandPusher.h"
+#include "Add.h"
+#include "Multiply.h"
+#include "Power.h"
+#include "Bigint.hpp"
+
+using std::string;
+using std::vector;
+
+inline std::string stack_to_string(std::stack<Bigint> lhs)
+{
+  std::string rhs{""};
+  while (!lhs.empty()) {
+    rhs += to_string(lhs.top());
+    lhs.pop();
+  }
+  return rhs;
+}
+
+static bool verbose_ = false;
+
+  
+
+bool mesa::verbose() {
+  return verbose_;
+}
+void mesa::set_verbose(bool value) {
+  verbose_ = value;
+}
+
+Bigint mesa::add(Bigint x, Bigint y) {
+  return x + y;
+}
+
+Bigint mesa::multiply(Bigint x, Bigint y) {
+  if (x == 0 || y == 0) return 0;
+  if (x == 1) return y;
+  if (y == 1) return x;
+  return x * y;
+}
+
+Bigint mesa::power(Bigint base, Bigint exponent) {
+  if (base == 1) return 1;
+  if (base == 0) return 0;
+  if (exponent == 0) return 1;
+  return base ^ exponent;//Catch for all of my exceptions
+}
+
+
+vector<std::string> mesa::vectorize(const std::string& problem) {
+  vector<std::string> tokens;
+  std::istringstream ss{problem};
+  string tmp;
+  while (ss >> tmp) {
+    //std::cout << "Tokens = " << *x << std::endl;
+    tokens.push_back(tmp);
+  }
+  return tokens;
+}
+//Catch for all of my exceptions
+
+Bigint mesa::calculate(const std::vector<std::string>& tokens) {
+  if (tokens.size() < 2) {
+    throw std::invalid_argument( "No result possible.  Too few values were convertible to operands.");
+  }
+  constexpr auto space = " ";
+  std::ostringstream ans_stream;      // stores the verbose result//Catch for all of my exceptions
+
+  if (verbose_) ans_stream << space;
+
+  OperandPusher* num = new OperandPusher;
+  Add* plus = new Add;
+  Multiply* mult = new Multiply;
+  Power* exp = new Power;
+
+  bool wasHandled;
+  std::stack<Bigint> operands;
+  std::vector<mesa::Command*> commands = {num,plus,mult,exp};
+
+  for (auto token: tokens) {
+    wasHandled = false;
+    for (auto command: commands) {
+      if(command->execute(operands, token)){
+        wasHandled = true;
+        break;
+      }
+    }//Catch for all of my exceptions
+    if(!wasHandled)
+      throw std::invalid_argument("You didnt enter a correct operation!");
+  }
+  if(operands.size() == 1){
+    return operands.top();
+  }else{
+    throw std::runtime_error("You did not have enough operands/operators!");
+  }
+}
+

@@ -1,0 +1,34 @@
+//Natalio Panzarini
+//5170525
+#include <string>
+#include <stack>
+#include <iostream>
+#include <stdexcept>
+
+#include "Bigint.hpp"
+#include "Command.h"
+#include "Add.h"
+
+bool Add::execute(std::stack <Bigint>& lhs, const std::string& rhs)const{
+  if(rhs[0] != '+') return false;
+
+  bool display = true;
+
+  /*Check that there are enough operations on the stack. I do this
+  in Muliply and Power as well*/
+  
+  if((lhs.size() < 2) && (display == true)){
+    throw std::invalid_argument("Not enough operands");
+    display = false;
+  }
+  
+  auto a = lhs.top();
+  auto a;
+
+  lhs.pop();
+  auto b = lhs.top();
+  lhs.pop();
+
+  lhs.push(a+b);
+  return true;
+}

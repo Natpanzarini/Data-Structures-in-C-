@@ -1,0 +1,196 @@
+//Natalio Panzarini
+//5170525
+#include "Bigint.hpp"
+
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <iterator>
+
+inline void remove_zeroes(std::vector<unsigned int>& data)
+{
+  while (data.back() == 0 && data.size() > 1) {
+    data.pop_back();
+  }
+}
+
+//Bigint constructor flips data_ so that we can do the operation, then it is
+//flipped back in the << operator right before we print to the user
+
+Bigint::Bigint(unsigned long long num)
+{
+  do {
+    data_.push_back(num % 10);
+    num /= 10;
+  } while (num > 0);
+}
+
+Bigint::Bigint(std::string data){
+  for (auto c = data.rbegin(); c != data.rend(); ++c) {
+    if ((*c) >= '0' && (*c) <= '9') {
+      data_.push_back((*c) - '0');
+    }else{
+      std::cout << " Skipping invalid operand " << std::endl; 
+    }
+  }
+}
+
+
+//MEMBER FUNCTION OVERLOADS
+
+/*Greater than and less than operator overloads to compare Bigints in
+ * exponentiation function*/
+
+Bigint& Bigint::operator++(int rhs){
+  Bigint& lhs = *this;
+  rhs = 1;
+  return (lhs += rhs);
+}
+
+Bigint& Bigint::operator+=(const Bigint& rhs)
+{
+  Bigint& lhs = *this;
+  int carry = 0;
+
+  lhs.data_.resize(std::max(lhs.data_.size(),rhs.data_.size()) + 1);
+
+  //Do the addition operation
+  std::transform(
+      rhs.data_.begin(),rhs.data_.end(),
+      lhs.data_.begin(),lhs.data_.begin(),
+      [&](int right, int left)
+      {
+      left = left + right;
+      return left;
+      }
+      );
+
+  //Handle the carry after addition has happened
+  std::transform(
+      lhs.data_.begin(),lhs.data_.end(),
+      lhs.data_.begin(),
+      [&](int left)
+      {
+      left += carry;
+      carry = (left / 10);
+      left = left % 10;
+      return left;
+      });
+
+  remove_zeroes(lhs.data_);
+
+  return *this;
+}
+
+Bigint& Bigint::operator*=(const Bigint& rhs){
+  Bigint& lhs = *this;
+  int carry = 0;
+  int counter = 0;
+  std::vector <unsigned int> result;
+
+  result.resize(std::max(lhs.data_.size(), rhs.data_.size()) * 2);
+
+  //We multiply lhs and rhs into a result vector
+
+  for_each(rhs.data_.begin(),rhs.data_.end(),[&](unsigned int rhsdigit)
+      {
+      transform(lhs.data_.begin(),
+        lhs.data_.end(),
+        result.begin() + counter,
+        result.begin() + counter,
+        [&](unsigned int lhsdigit, unsigned int resdigit)
+        {
+        return resdigit += (lhsdigit * rhsdigit);
+        });
+      counter++;
+      });
+
+  //Here we handle the carry after multiplication
+
+  transform(result.begin(),result.end(),
+      result.begin(),
+      [&](int res)
+      {
+      res += carry;
+      carry = (res/10);
+      return res %= 10;
+      });
+
+  std::swap(result, lhs.data_);
+
+  remove_zeroes(lhs.data_);
+  return *this;
+}
+
+Bigint& Bigint::operator ^=(const Bigint& rhs){
+  Bigint& lhs = *this;
+  if(rhs == 0){return lhs = 1;}
+  if (rhs == 1){return lhs;}
+
+  Bigint result = lhs;
+
+  for (Bigint i = 1; i < rhs; i++){
+    result *= lhs;
+  }
+
+  std::swap(result, lhs);
+
+  return *this;
+}
+
+//NON-MEMBER FUNCTION OVERLOADS
+
+std::ostream& operator <<(std:: ostream& os, const Bigint& rhs){
+  std::copy(rhs.data().rbegin(), rhs.data().rend(),
+      std::ostream_iterator <unsigned int>(os));
+  return os;
+}
+
+bool operator ==(const Bigint& lhs, const Bigint& rhs){
+  if(lhs.data() == rhs.data()){
+    return true;
+  }
+  return false;
+}
+
+Bigint& operator +(Bigint lhs, const Bigint& rhs){
+  return (lhs += rhs);
+}
+
+Bigint& operator *(Bigint lhs, const Bigint& rhs){
+  return (lhs *= rhs);
+}
+
+Bigint& operator ^(Bigint lhs, const Bigint& rhs){
+  return (lhs ^= rhs);
+}
+
+bool operator <(const Bigint& lhs, const Bigint& rhs){
+
+  if(lhs.data().size() < rhs.data().size()){
+    return true;
+  }else if(lhs.data() < rhs.data()){
+    return true;
+  }
+  return false;
+}
+
+bool operator >(const Bigint& lhs, const Bigint& rhs){
+
+  if(lhs.data().size() > rhs.data().size()){
+    return true;
+  }else if(lhs.data() > rhs.data()){
+    return true;
+  }
+  return false;
+}
+
+std::string to_string(const Bigint& lhs){
+  std::ostringstream oss;
+  std::copy(lhs.data().begin(), lhs.data().end(),
+      std::ostream_iterator<int>(oss));
+  return oss.str();
+}
+
+

@@ -1,0 +1,13 @@
+#include <stack>
+#include <string>
+
+#include "Bigint.hpp"
+#include "Command.h"
+
+class Add: public mesa::Command{
+  public:
+    ~Add(){}
+
+    //Add execute that takes two strings and adds
+    bool execute(std::stack <Bigint>& lhs, const std::string& rhs)const;
+};

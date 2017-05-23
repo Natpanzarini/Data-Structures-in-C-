@@ -1,0 +1,46 @@
+#pragma once
+#include <istream>
+#include <ostream>
+#include <vector>
+#include <iterator>
+#include <string>
+
+class Bigint
+{
+  private:
+    std::vector<unsigned int> data_;
+
+  public:
+    Bigint(unsigned long long num);
+    Bigint(const std::string s);
+
+   //MEMBER FUNCTIONS
+    Bigint& operator ++(int rhs);
+
+    Bigint& operator+=(const Bigint& rhs);
+    Bigint& operator*=(const Bigint& rhs);
+    Bigint& operator^=(const Bigint& rhs);
+
+    const std::vector <unsigned int>& data() const {
+      return data_;
+    }
+
+    std::vector <unsigned int> set_data(std::vector <unsigned int> a){
+      data_ = a;
+    }
+
+};
+
+//NON MEMBER FUNCTIONS
+std::ostream& operator<< (std::ostream& os, const Bigint& rhs);
+bool operator ==(const Bigint& lhs, const Bigint& rhs);
+
+Bigint& operator +(Bigint lhs, const Bigint& rhs);
+Bigint& operator *(Bigint lhs, const Bigint& rhs);
+Bigint& operator ^(Bigint lhs, const Bigint& rhs);
+
+bool operator <(const Bigint& lhs, const Bigint& rhs);
+bool operator >(const Bigint& lhs, const Bigint& rhs);
+
+std::string to_string(const Bigint& lhs);
+

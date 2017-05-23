@@ -1,0 +1,91 @@
+#include "main.h"
+#include "calc.h"
+
+#include <cstring>
+#include <iostream>
+#include <signal.h>
+#include <string>
+
+/**
+ * Parse command line arguments and run the calculator.
+ */
+
+int main(int argc, char** argv) {
+  for (int i=1; i < argc; ++i) {
+    if (!std::strcmp(argv[i], "-h")) {
+      help(*argv);
+    } else if (!std::strcmp(argv[i], "-v")) {
+      mesa::set_verbose(true);
+    } else {
+      usage(*argv);
+      exit(-1);
+    }
+  }
+
+  // Set up interrupts to print a message
+  if (mesa::interactive()) {
+    signal (SIGINT, use_quit);
+  }
+
+
+  calc();
+  return 0;
+}
+
+void calc() {
+  std::string command;
+
+  while (true) {
+    command.clear();
+    std::cin >> command;
+    if (command == "quit" || command.empty()) break;
+
+      std::string line;
+      getline(std::cin, line);
+      std::vector<std::string> temp = mesa::vectorize(command + line);
+
+      //Try catch for all of my exceptions in calculate.
+      
+      try {
+        auto results = mesa::calculate(temp);
+
+        if (mesa::verbose()) {
+          std::cout << command + line <<  " = " << results;
+        }else{
+          std::cout << results;
+        } 
+      } catch (const std::exception& e) { 
+        std::cerr << "Calculator error: " << e.what() << std::endl;
+        continue;
+      }
+      std::cout << std::endl;  // actually want to flush cin here
+  }
+}
+
+
+static void usage(const char* name) {
+  std::cerr << "Usage: " << name << " [-h] [-v] \n";
+}
+
+static void help (const char* name) {
+  usage(name);
+  std::cerr << "to run the program interactively. To run using standard input:\n"
+    << "\techo 'equation' | " << name << '\n'
+    << "where 'equation' is a single postfix notation equation, i.e. '2 2 +'\n"
+    << "or:\n\t" << name << " < input_file.txt\n"
+    << "where 'input_file.txt' contains postfix notation equations\n\n";
+
+  std::cerr << "Options:\n"
+    << "  -h   Show this text\n"
+    << "  -v   Set a verbose output flag.  Default = false.\n"
+    << "\nRunning with no input from standard in enters 'interactive mode'.\n"
+    << "The program runs until 'quit' is the first word on a line or EOF is reached.\n\n";
+  exit(0);
+}
+
+void use_quit (const int sig) {
+  std::cout << "\nsignal " << sig << " (interrupt) captured. Use quit to exit.\n";
+  signal (SIGINT, use_quit);
+}
+
+
